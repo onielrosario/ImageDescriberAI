@@ -1,11 +1,14 @@
 import SwiftUI
+import AIDescriptionService
 import PhotosUI
 
 public struct ScannerView: View {
-    @StateObject private var viewModel = ScannerViewModel()
+    @StateObject private var viewModel: ScannerViewModel
     @State private var selectedItem: PhotosPickerItem?
 
-    public init() {}
+    public init(aiService: AIServiceInterface = MockAIService()) {
+        _viewModel = StateObject(wrappedValue: ScannerViewModel(aiService: aiService))
+    }
 
     public var body: some View {
         VStack(spacing: 20) {
@@ -30,7 +33,7 @@ public struct ScannerView: View {
                 Text("Pick an Image")
             }
  
-            .onChange(of: selectedItem) { (_, newItem) in
+            .onChange(of: selectedItem) { _, newItem in
                 Task {
                     await viewModel.handlePickedItem(newItem)
                 }

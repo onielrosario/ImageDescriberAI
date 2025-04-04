@@ -1,4 +1,5 @@
 import SwiftUI
+import AIDescriptionService
 import PhotosUI
 
 public final class ScannerViewModel: ObservableObject {
@@ -6,15 +7,20 @@ public final class ScannerViewModel: ObservableObject {
     @Published public var scanResult: String?
     @Published public var isLoading = false
     
-    public init() {}
+    
+    private let aiService: AIServiceInterface
+    
+    public init(aiService: AIServiceInterface) {
+        self.aiService = aiService
+    }
     
     public func scanImage() async {
-        guard selectedImage != nil else { return }
+        guard let image = selectedImage else { return }
         isLoading = true
         
         do {
-            try await Task.sleep(for: .seconds(1.5))
-            self.scanResult = "This looks like a placeholder description for a scanner image."
+            let description = try await aiService.describe(image: image)
+            scanResult = description
         }
         catch {
             self.scanResult = "Scan failed: \(error.localizedDescription)"
