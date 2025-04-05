@@ -11,53 +11,55 @@ public struct ScannerView: View {
     }
 
     public var body: some View {
-        VStack(spacing: 20) {
-            Text("🧠 Image Describer")
-                .font(.largeTitle)
-                .bold()
+        ScrollView {
+            VStack(spacing: 20) {
+                Text("🧠 Image Describer")
+                    .font(.largeTitle)
+                    .bold()
 
-            if let image = viewModel.selectedImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 250)
-                    .cornerRadius(10)
-            } else {
-                Rectangle()
-                    .fill(Color.gray.opacity(0.2))
-                    .frame(height: 250)
-                    .overlay(Text("No image selected").foregroundColor(.gray))
-            }
-
-            PhotosPicker(selection: $selectedItem, matching: .images) {
-                Text("Pick an Image")
-            }
- 
-            .onChange(of: selectedItem) { _, newItem in
-                Task {
-                    await viewModel.handlePickedItem(newItem)
+                if let image = viewModel.selectedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 250)
+                        .cornerRadius(10)
+                } else {
+                    Rectangle()
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 250)
+                        .overlay(Text("No image selected").foregroundColor(.gray))
                 }
-            }
 
-            Button("Scan Image") {
-                Task {
-                    await viewModel.scanImage()
+                PhotosPicker(selection: $selectedItem, matching: .images) {
+                    Text("Pick an Image")
                 }
-            }
-            .disabled(viewModel.selectedImage == nil || viewModel.isLoading)
+     
+                .onChange(of: selectedItem) { _, newItem in
+                    Task {
+                        await viewModel.handlePickedItem(newItem)
+                    }
+                }
 
-            if viewModel.isLoading {
-                ProgressView("Scanning...")
-            }
+                Button("Scan Image") {
+                    Task {
+                        await viewModel.scanImage()
+                    }
+                }
+                .disabled(viewModel.selectedImage == nil || viewModel.isLoading)
 
-            if let result = viewModel.scanResult {
-                Text("📝 Result: \(result)")
-                    .padding()
-                    .multilineTextAlignment(.center)
-            }
+                if viewModel.isLoading {
+                    ProgressView("Scanning...")
+                }
 
-            Spacer()
+                if let result = viewModel.scanResult {
+                    Text("📝 Result: \(result)")
+                        .padding()
+                        .multilineTextAlignment(.center)
+                }
+
+                Spacer()
+            }
+            .padding()
         }
-        .padding()
     }
 }
