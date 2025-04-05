@@ -16,7 +16,7 @@ public final class OpenAIService: AIServiceInterface {
         
         let base64 = imageData.base64EncodedString()
         
-        guard let url = URL(string: "") else {
+        guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
             throw URLError(.badURL)
         }
         
@@ -36,11 +36,18 @@ public final class OpenAIService: AIServiceInterface {
         
         let (data, response) = try await URLSession.shared.data(for: request)
         
-        guard let httpResponse = response as? HTTPURLResponse,
-              httpResponse.statusCode == 200
-        else {
-            throw OpenAIError.invalidResponse
+        if let httpResponse = response as? HTTPURLResponse {
+            print("🔁 Status Code:", httpResponse.statusCode)
+        } else {
+            print("❌ Response is not HTTPURLResponse")
         }
+
+        if let responseBody = String(data: data, encoding: .utf8) {
+            print("📃 Response Body:\n", responseBody)
+        } else {
+            print("❌ Could not decode response body")
+        }
+
         
         let decodedData = try JSONDecoder().decode(OpenAIResponse.self, from: data)
         return decodedData.choices.first?.message.content ?? "No response."

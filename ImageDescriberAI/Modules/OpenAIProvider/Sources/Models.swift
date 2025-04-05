@@ -1,7 +1,7 @@
 import Foundation
 
 struct OpenAIRequest: Encodable {
-    let model: String = "gpt-4-vision-preview"
+    let model: String = "gpt-4o"
     let messages: [OpenAIMessage]
     let max_tokens: Int = 500
 }

@@ -2,6 +2,7 @@ import SwiftUI
 import AIDescriptionService
 import PhotosUI
 
+@MainActor
 public final class ScannerViewModel: ObservableObject {
     @Published public var selectedImage: UIImage?
     @Published public var scanResult: String?
