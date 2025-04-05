@@ -28,7 +28,8 @@ let project = Project(
                 .target(name: "ImageAnalysis"),
                 .target(name: "AIDescriptionService"),
                 .target(name: "SharedModels"),
-                .target(name: "Utilities")
+                .target(name: "Utilities"),
+                .target(name: "OpenAIProvider")
             ],
             settings: .settings(base: moduleSettings)
         ),

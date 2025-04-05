@@ -1,11 +1,19 @@
 import ImageScannerUI
+import OpenAIProvider
 import SwiftUI
+import Utilities
 
 public struct ContentView: View {
-    public init() {}
+    
+    let key: String
+    
+    public init() {
+        let apiKey = Env["OPENAI_API_KEY"] ?? ""
+        key = apiKey
+    }
 
     public var body: some View {
-        ScannerView()
+        ScannerView(aiService: OpenAIService(apiKey: key))
     }
 }
 
