@@ -83,6 +83,20 @@ let project = Project(
             settings: .settings(base: moduleSettings)
         ),
         .target(
+            name: "OpenAIProvider",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "io.tuist.OpenAIProvider",
+            infoPlist: .default,
+            sources: ["Modules/OpenAIProvider/Sources/**"],
+            resources: [],
+            dependencies: [
+                .target(name: "AIDescriptionService"),
+                .target(name: "ImageAnalysis"),
+            ],
+            settings: .settings(base: moduleSettings)
+        ),
+        .target(
             name: "ImageDescriberAITests",
             destinations: .iOS,
             product: .unitTests,
