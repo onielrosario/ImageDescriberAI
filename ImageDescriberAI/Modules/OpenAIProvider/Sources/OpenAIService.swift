@@ -17,7 +17,7 @@ public final class OpenAIService: AIServiceInterface {
         
         let base64 = imageData.base64EncodedString()
         
-        guard let url = URL(string: "https://api.openai.com/v1/chat/completions") else {
+        guard let url = URL(string: AppConstants.Endpoints.openAIUrl.url) else {
             throw URLError(.badURL)
         }
         
