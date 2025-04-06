@@ -95,6 +95,18 @@ This installs Tuist (if needed), sets up modules, and configures local paths.
 
 ---
 
+## 🧪 Testing & Contribution
+
+Unit testing is supported through the ImageDescriberAITests target (_Coming soon_)
+
+Modular design makes mocking and test injection easy
+
+## 👥 Contributing
+
+PRs welcome! If you find a bug or want to propose an improvement, open an issue or submit a pull request. Let's make it better together.
+
+---
+
 ## 👨‍💻 Built By
 
 **Oniel Rosario** – iOS Engineer
