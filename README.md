@@ -1,3 +1,8 @@
+[![Swift](https://img.shields.io/badge/Swift-5.9-orange)](https://swift.org)
+[![Tuist](https://img.shields.io/badge/Tuist-Modular-blue)](https://tuist.io)
+[![iOS](https://img.shields.io/badge/iOS-16+-lightgrey)](https://developer.apple.com/ios/)
+
+
 <img src="https://github.com/user-attachments/assets/590f4ebb-2f0a-45ba-a111-c5a73c780384" alt="Hero Banner" width="100%" />
 
 Effortlessly turn images into natural language descriptions using OpenAI’s GPT-4o vision model. Built in SwiftUI with a modular, production-ready architecture.
