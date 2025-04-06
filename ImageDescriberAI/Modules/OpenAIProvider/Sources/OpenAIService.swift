@@ -1,6 +1,7 @@
+import AIDescriptionService
+import SharedModels
 import Utilities
 import UIKit
-import AIDescriptionService
 
 public final class OpenAIService: AIServiceInterface {
     private let apiKey: String

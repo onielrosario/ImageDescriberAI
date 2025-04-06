@@ -94,6 +94,7 @@ let project = Project(
             dependencies: [
                 .target(name: "AIDescriptionService"),
                 .target(name: "ImageAnalysis"),
+                .target(name: "SharedModels")
             ],
             settings: .settings(base: moduleSettings)
         ),
