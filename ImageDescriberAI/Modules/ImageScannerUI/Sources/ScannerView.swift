@@ -1,99 +1,117 @@
 import SwiftUI
-import AIDescriptionService
 import PhotosUI
-import Utilities
 
 public struct ScannerView: View {
-    @StateObject private var viewModel: ScannerViewModel
+    @StateObject private var viewModel = ScannerViewModel()
     @State private var selectedItem: PhotosPickerItem?
 
-    public init(aiService: AIServiceInterface = MockAIService()) {
-        _viewModel = StateObject(wrappedValue: ScannerViewModel(aiService: aiService))
-    }
+    public init() {}
 
     public var body: some View {
         ScrollView {
             VStack(spacing: 24) {
-                Text(AppConstants.ImageScannerUI.scannerView.title)
-                    .font(.largeTitle.bold())
-                    .multilineTextAlignment(.center)
-                
-                Group {
-                    if let image = viewModel.selectedImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 250)
-                            .cornerRadius(10)
-                    } else {
-                        Rectangle()
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(height: 250)
-                            .overlay(Text("No image selected").foregroundColor(.gray))
+                // MARK: - Header
+                HStack(spacing: 8) {
+                    Text("🧠")
+                    Text("Image Describer")
+                        .font(.largeTitle)
+                        .bold()
+                }
+                .padding(.top, 32)
+
+                // MARK: - Image
+                if let image = viewModel.selectedImage {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 250)
+                        .cornerRadius(16)
+                        .shadow(radius: 4)
+                } else {
+                    RoundedRectangle(cornerRadius: 16)
+                        .fill(Color.gray.opacity(0.1))
+                        .frame(height: 250)
+                        .overlay(
+                            Text("No image selected")
+                                .foregroundColor(.gray)
+                        )
+                }
+
+                // MARK: - Actions
+                PhotosPicker(selection: $selectedItem, matching: .images) {
+                    Text("📷 Pick an Image")
+                        .fontWeight(.semibold)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(Color.blue.opacity(0.1))
+                        .cornerRadius(10)
+                }
+                .onChange(of: selectedItem) { _, newItem in
+                    guard let item = newItem else { return }
+
+                    Task {
+                        do {
+                            if let data = try await item.loadTransferable(type: Data.self),
+                               let uiImage = UIImage(data: data) {
+                                await MainActor.run {
+                                    viewModel.selectedImage = uiImage
+                                    viewModel.scanResult = nil
+                                }
+                            }
+                        } catch {
+                            print("❌ Failed to load image data: \(error)")
+                        }
                     }
                 }
-                .animation(.easeInOut, value: viewModel.selectedImage)
 
-
-                PhotosPicker(selection: $selectedItem, matching: .images) {
-                    Text("Pick an Image")
-                        .foregroundStyle(Color.blue)
-                }
-     
-//                .onChange(of: $selectedItem) { _, newItem in
-//                    Task {
-//                        await viewModel.handlePickedItem(newItem)
-//                    }
-//                }
-
-                Button("Scan Image") {
+                Button {
                     Task {
                         await viewModel.scanImage()
-                        let feedback = UINotificationFeedbackGenerator()
-                        feedback.notificationOccurred(.success)
+                    }
+                } label: {
+                    if viewModel.scanResult != nil {
+                        Label("Already Scanned ✅", systemImage: "checkmark.seal")
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.gray)
+                            .cornerRadius(10)
+                    } else {
+                        Label("Scan Image", systemImage: "brain.head.profile")
+                            .foregroundColor(.white)
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.blue)
+                            .cornerRadius(10)
                     }
                 }
-                .disabled(viewModel.selectedImage == nil || viewModel.isLoading)
-                .foregroundColor(viewModel.selectedImage == nil || viewModel.isLoading ? .gray : .blue)
+                .disabled(viewModel.selectedImage == nil || viewModel.isLoading || viewModel.scanResult != nil)
 
                 if viewModel.isLoading {
-                    ProgressView("Scanning...")
+                    ProgressView("Analyzing image...")
+                        .padding()
                 }
-                
-                if let error = viewModel.errorMessage {
-                    Text(error)
-                        .foregroundColor(.red)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal)
-                }
-                else if let result = viewModel.scanResult {
+
+                // MARK: - Result Card
+                if let result = viewModel.scanResult {
                     VStack(alignment: .leading, spacing: 12) {
-                        Text("📝 Result:")
+                        Label("Result:", systemImage: "pencil.and.outline")
                             .font(.headline)
+
                         Text(result)
-                            .font(.system(.body, design: .rounded))
-                            .lineSpacing(4)
+                            .font(.body)
                             .multilineTextAlignment(.leading)
                     }
                     .padding()
-                    .background {
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .fill(Color(.systemGray6))
-                                .shadow(color: .black.opacity(0.1), radius: 10, x: 0, y: 5)
-                    }
+                    .background(Color(.secondarySystemBackground))
+                    .cornerRadius(16)
+                    .shadow(radius: 2)
                     .padding(.horizontal)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
-                    .animation(.easeInOut, value: result)
                 }
 
-                Spacer(minLength: 20)
+                Spacer(minLength: 40)
             }
-            .padding()
-        }
-        .onChange(of: selectedItem) { _, newItem in
-            Task {
-                await viewModel.handlePickedItem(newItem)
-            }
+            .padding(.horizontal)
         }
     }
 }

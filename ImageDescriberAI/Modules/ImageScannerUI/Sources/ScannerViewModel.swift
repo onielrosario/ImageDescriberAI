@@ -1,6 +1,8 @@
 import SwiftUI
+import OpenAIProvider
 import AIDescriptionService
 import PhotosUI
+import Utilities
 
 @MainActor
 public final class ScannerViewModel: ObservableObject {
@@ -12,7 +14,7 @@ public final class ScannerViewModel: ObservableObject {
     
     private let aiService: AIServiceInterface
     
-    public init(aiService: AIServiceInterface) {
+    public init(aiService: AIServiceInterface = OpenAIService(apiKey: Env["OPENAI_API_KEY"] ?? "")) {
         self.aiService = aiService
     }
     

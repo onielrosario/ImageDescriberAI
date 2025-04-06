@@ -5,15 +5,10 @@ import Utilities
 
 public struct ContentView: View {
     
-    let key: String
-    
-    public init() {
-        let apiKey = Env["OPENAI_API_KEY"] ?? ""
-        key = apiKey
-    }
+    public init() {}
 
     public var body: some View {
-        ScannerView(aiService: OpenAIService(apiKey: key))
+        ScannerView()
     }
 }
 
