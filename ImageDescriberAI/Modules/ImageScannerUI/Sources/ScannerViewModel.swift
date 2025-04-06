@@ -7,6 +7,7 @@ public final class ScannerViewModel: ObservableObject {
     @Published public var selectedImage: UIImage?
     @Published public var scanResult: String?
     @Published public var isLoading = false
+    @Published public var errorMessage: String?
     
     
     private let aiService: AIServiceInterface
@@ -17,15 +18,19 @@ public final class ScannerViewModel: ObservableObject {
     
     public func scanImage() async {
         guard let image = selectedImage else { return }
+        
         isLoading = true
+        errorMessage = nil
         
         do {
             let description = try await aiService.describe(image: image)
             scanResult = description
         }
         catch {
-            self.scanResult = "Scan failed: \(error.localizedDescription)"
+            errorMessage = "❌ \(error.localizedDescription)"
+            scanResult = nil
         }
+        
         self.isLoading = false
     }
     
@@ -37,8 +42,9 @@ public final class ScannerViewModel: ObservableObject {
 
             selectedImage = image
             scanResult = nil
+            errorMessage = nil
         } catch {
-            print("❌ Failed to load image data: \(error)")
+            errorMessage = "Failed to load image data: \(error.localizedDescription)"
         }
     }
 }
