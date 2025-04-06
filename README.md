@@ -91,8 +91,6 @@ This installs Tuist (if needed), sets up modules, and configures local paths.
 
 *Coming soon: GIF demo of image selection → AI description.*
 
-*Add screenshots of sample usage here.*
-
 ---
 
 ## 🧪 Testing & Contribution
