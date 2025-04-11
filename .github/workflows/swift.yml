@@ -1,0 +1,35 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+name: iOS-CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Install Tuist
+        run: curl -Ls https://install.tuist.io | bash
+
+      - name: Generate Xcode project
+        run: tuist generate
+
+      - name: Boot Simulator
+        run: |
+          xcrun simctl boot "iPhone 14"
+          xcrun simctl bootstatus "iPhone 14"
+
+      - name: Build and Test with xcodebuild
+        run: |
+          xcodebuild \
+            -workspace ImageDescriberAI.xcworkspace \
+            -scheme ImageDescriberAI \
+            -sdk iphonesimulator \
+            -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.2' \
+            clean test
