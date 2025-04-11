@@ -25,6 +25,10 @@ jobs:
           cd ImageDescriberAI
           tuist generate
 
+      - name: List simulators
+        run: xcrun simctl list devicetypes
+
+
       - name: Boot Simulator
         run: |
           xcrun simctl boot "iPhone 14"
