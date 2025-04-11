@@ -28,11 +28,16 @@ jobs:
       - name: List simulators
         run: xcrun simctl list devicetypes
 
+      - name: Create iPhone 14 simulator
+        run: |
+          xcrun simctl create "CI-iPhone-14" \
+          com.apple.CoreSimulator.SimDeviceType.iPhone-14 \
+          com.apple.CoreSimulator.SimRuntime.iOS-16-4
 
       - name: Boot Simulator
         run: |
-          xcrun simctl boot "iPhone 14"
-          xcrun simctl bootstatus "iPhone 14"
+          xcrun simctl boot "CI-iPhone-14"
+          xcrun simctl bootstatus "CI-iPhone-14"
 
       - name: Build for Testing
         run: |
