@@ -35,7 +35,7 @@ jobs:
         run: |
           xcrun simctl create "CI-iPhone-14" \
           com.apple.CoreSimulator.SimDeviceType.iPhone-14 \
-          com.apple.CoreSimulator.SimRuntime.iOS-16-4
+          com.apple.CoreSimulator.SimRuntime.iOS-17-5
 
       - name: Boot Simulator
         run: |
@@ -47,13 +47,13 @@ jobs:
           xcodebuild build-for-testing \
           -workspace ImageDescriberAI.xcworkspace \
           -scheme MyScheme \
-          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5'
       - name: Test Without Building
         run: |
           xcodebuild test-without-building \
           -workspace ImageDescriberAI.xcworkspace \
           -scheme MyScheme \
-          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4' \
+          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5' \
           -only-testing:MySchemeTests \
           -enableCodeCoverage YES
 
