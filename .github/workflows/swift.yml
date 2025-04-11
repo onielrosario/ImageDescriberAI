@@ -52,14 +52,14 @@ jobs:
           xcodebuild build-for-testing \
           -workspace ImageDescriberAI.xcworkspace \
           -scheme ImageDescriberAI \
-          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5'
+          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5,arch=arm64'
       - name: Test Without Building
         run: |
           cd ImageDescriberAI
           xcodebuild test-without-building \
           -workspace ImageDescriberAI.xcworkspace \
           -scheme ImageDescriberAI \
-          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5' \
+          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5,arch=arm64' \
           -only-testing:ImageDescriberAITests \
           -enableCodeCoverage YES
 
