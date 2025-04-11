@@ -34,12 +34,19 @@ jobs:
           xcrun simctl boot "iPhone 14"
           xcrun simctl bootstatus "iPhone 14"
 
-      - name: Build and Test with xcodebuild
+      - name: Build for Testing
         run: |
-          xcodebuild \
-            -workspace ImageDescriberAI.xcworkspace \
-            -scheme ImageDescriberAI \
-            -sdk iphonesimulator \
-            -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.2' \
-            clean test
+          xcodebuild build-for-testing \
+          -workspace ImageDescriberAI.xcworkspace \
+          -scheme MyScheme \
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4'
+      - name: Test Without Building
+        run: |
+          xcodebuild test-without-building \
+          -workspace ImageDescriberAI.xcworkspace \
+          -scheme MyScheme \
+          -destination 'platform=iOS Simulator,name=iPhone 14,OS=16.4' \
+          -only-testing:MySchemeTests \
+          -enableCodeCoverage YES
+
 
