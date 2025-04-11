@@ -44,12 +44,14 @@ jobs:
 
       - name: Build for Testing
         run: |
+          cd ImageDescriberAI
           xcodebuild build-for-testing \
           -workspace ImageDescriberAI.xcworkspace \
           -scheme MyScheme \
           -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5'
       - name: Test Without Building
         run: |
+          cd ImageDescriberAI
           xcodebuild test-without-building \
           -workspace ImageDescriberAI.xcworkspace \
           -scheme MyScheme \
