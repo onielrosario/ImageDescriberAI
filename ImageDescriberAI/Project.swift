@@ -41,6 +41,10 @@ let project = Project(
             infoPlist: .default,
             sources: ["Modules/ImageScannerUI/Sources/**"],
             resources: [],
+            dependencies: [
+                .target(name: "SharedModels"),
+                .target(name: "Utilities")
+            ],
             settings: .settings(base: moduleSettings)
         ),
         .target(
