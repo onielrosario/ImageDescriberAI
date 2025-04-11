@@ -2,7 +2,8 @@ import ProjectDescription
 
 let moduleSettings: SettingsDictionary = [
     "CLANG_VERIFY_MODULES": "YES",
-    "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
+    "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "arm64"
 ]
 
 let project = Project(
