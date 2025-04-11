@@ -21,7 +21,9 @@ jobs:
           brew install tuist
 
       - name: Generate Xcode project
-        run: tuist generate
+        run: |
+          cd ImageDescriberAI
+          tuist generate
 
       - name: Boot Simulator
         run: |
