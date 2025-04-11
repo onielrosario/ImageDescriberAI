@@ -42,6 +42,10 @@ jobs:
           xcrun simctl boot "CI-iPhone-14"
           xcrun simctl bootstatus "CI-iPhone-14"
 
+      - name: Inject dummy .env file into bundle
+        run: |
+          echo "OPENAI_API_KEY=test_dummy_key" > ImageDescriberAI/ImageDescriberAI/Resources/.env
+
       - name: Build for Testing
         run: |
           cd ImageDescriberAI
