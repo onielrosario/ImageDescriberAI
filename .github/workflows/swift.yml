@@ -1,0 +1,62 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+name: iOS-CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Tuist
+        run: |
+          brew update
+          brew tap tuist/tuist
+          brew install tuist
+
+      - name: Generate Xcode project
+        run: |
+          cd ImageDescriberAI
+          tuist generate
+
+      - name: List simulators
+        run: xcrun simctl list devicetypes
+
+      - name: 🔍 List Available Runtimes
+        run: xcrun simctl list runtimes
+
+      - name: Create iPhone 14 simulator
+        run: |
+          xcrun simctl create "CI-iPhone-14" \
+          com.apple.CoreSimulator.SimDeviceType.iPhone-14 \
+          com.apple.CoreSimulator.SimRuntime.iOS-17-5
+
+      - name: Boot Simulator
+        run: |
+          xcrun simctl boot "CI-iPhone-14"
+          xcrun simctl bootstatus "CI-iPhone-14"
+
+      - name: Build for Testing
+        run: |
+          cd ImageDescriberAI
+          xcodebuild build-for-testing \
+          -workspace ImageDescriberAI.xcworkspace \
+          -scheme ImageDescriberAI \
+          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5'
+      - name: Test Without Building
+        run: |
+          cd ImageDescriberAI
+          xcodebuild test-without-building \
+          -workspace ImageDescriberAI.xcworkspace \
+          -scheme ImageDescriberAI \
+          -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5' \
+          -only-testing:ImageDescriberAITests \
+          -enableCodeCoverage YES
+
+
