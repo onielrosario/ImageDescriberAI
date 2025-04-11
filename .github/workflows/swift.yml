@@ -54,7 +54,7 @@ jobs:
           cd ImageDescriberAI
           xcodebuild test-without-building \
           -workspace ImageDescriberAI.xcworkspace \
-          -scheme MyScheme \
+          -scheme ImageDescriberAI \
           -destination 'platform=iOS Simulator,name=CI-iPhone-14,OS=17.5' \
           -only-testing:MySchemeTests \
           -enableCodeCoverage YES
