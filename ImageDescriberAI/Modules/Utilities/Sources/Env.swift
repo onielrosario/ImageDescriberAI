@@ -4,6 +4,11 @@ public enum Env {
     private static let filename = ".env"
 
     public static var values: [String: String] = {
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+            print("⚠️ .env access during tests. Returning dummy OPENAI_API_KEY.")
+            return ["OPENAI_API_KEY": "test_dummy_key"]
+        }
+        
         let fsPath = FileManager.default.currentDirectoryPath + "/\(filename)"
         let fsURL = URL(fileURLWithPath: fsPath)
 
