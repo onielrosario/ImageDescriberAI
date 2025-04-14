@@ -67,7 +67,7 @@ lane :beta do
       issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
       key_content: Base64.decode64(ENV["APP_STORE_CONNECT_API_KEY_BASE64"])
     ),
-    changelog: File.read("fastlane/release_notes.md"),
+    changelog: File.read("./fastlane/release_notes.md"),
     skip_waiting_for_build_processing: true,
     notify_external_testers: false
   )
