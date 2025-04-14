@@ -71,3 +71,16 @@ Tuist/.build
 
 ## Bootstrap file
 bootstrap.sh
+
+## Custom Project Files
+.env
+
+# Fastlane artifacts
+fastlane/report.xml
+fastlane/test_output
+fastlane/screenshots
+fastlane/Preview.html
+*.p12
+*.mobileprovision
+*.ipa
+*.dSYM.zip
