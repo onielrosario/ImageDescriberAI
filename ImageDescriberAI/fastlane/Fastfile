@@ -7,7 +7,8 @@ lane :beta do
     git_basic_authorization: ENV['GIT_AUTHORIZATION'],
     team_id: ENV["DEVELOPER_TEAM_ID"],
     app_identifier: ENV["APP_IDENTIFIER"],
-    username: ENV["APP_STORE_USERNAME"]
+    username: ENV["APP_STORE_USERNAME"],
+    clone_branch_directly: true
   }
 
   # Only add keychain options in CI
