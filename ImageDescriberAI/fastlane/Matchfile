@@ -1,3 +1,0 @@
-git_url("https://github.com/onielrosario/ios-certificates")
-storage_mode("git")
-type("appstore")
