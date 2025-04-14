@@ -84,3 +84,6 @@ fastlane/Preview.html
 *.mobileprovision
 *.ipa
 *.dSYM.zip
+
+# fastlane signing cache
+**/ios-certificates/
