@@ -1,24 +1,38 @@
 import SwiftUI
+import OpenAIProvider
+import AIDescriptionService
 import PhotosUI
+import Utilities
 
+@MainActor
 public final class ScannerViewModel: ObservableObject {
     @Published public var selectedImage: UIImage?
     @Published public var scanResult: String?
     @Published public var isLoading = false
+    @Published public var errorMessage: String?
     
-    public init() {}
+    
+    private let aiService: AIServiceInterface
+    
+    public init(aiService: AIServiceInterface = OpenAIService(apiKey: Env["OPENAI_API_KEY"] ?? "")) {
+        self.aiService = aiService
+    }
     
     public func scanImage() async {
-        guard selectedImage != nil else { return }
+        guard let image = selectedImage else { return }
+        
         isLoading = true
+        errorMessage = nil
         
         do {
-            try await Task.sleep(for: .seconds(1.5))
-            self.scanResult = "This looks like a placeholder description for a scanner image."
+            let description = try await aiService.describe(image: image)
+            scanResult = description
         }
         catch {
-            self.scanResult = "Scan failed: \(error.localizedDescription)"
+            errorMessage = "❌ \(error.localizedDescription)"
+            scanResult = nil
         }
+        
         self.isLoading = false
     }
     
@@ -30,8 +44,9 @@ public final class ScannerViewModel: ObservableObject {
 
             selectedImage = image
             scanResult = nil
+            errorMessage = nil
         } catch {
-            print("❌ Failed to load image data: \(error)")
+            errorMessage = "Failed to load image data: \(error.localizedDescription)"
         }
     }
 }

@@ -2,7 +2,12 @@ import ProjectDescription
 
 let moduleSettings: SettingsDictionary = [
     "CLANG_VERIFY_MODULES": "YES",
-    "ENABLE_USER_SCRIPT_SANDBOXING": "YES"
+    "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+    "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "$(inherited) x86_64",
+    "EXCLUDED_ARCHS[sdk=iphoneos*]": "x86_64",
+    "CODE_SIGN_STYLE": "Manual",
+    "DEVELOPMENT_TEAM": "WU26PZSDC3",
+    "CODE_SIGN_IDENTITY": "Apple Distribution"
 ]
 
 let project = Project(
@@ -15,6 +20,7 @@ let project = Project(
             bundleId: "io.tuist.ImageDescriberAI",
             infoPlist: .extendingDefault(
                 with: [
+                    "CFBundleDisplayName": "Describer AI",
                     "UILaunchScreen": [
                         "UIColorName": "",
                         "UIImageName": "",
@@ -22,13 +28,17 @@ let project = Project(
                 ]
             ),
             sources: ["ImageDescriberAI/Sources/**"],
-            resources: ["ImageDescriberAI/Resources/**"],
+            resources: [
+                "ImageDescriberAI/Resources/**",
+                .glob(pattern: "!ImageDescriberAI/Resources/.env")
+                       ],
             dependencies: [
                 .target(name: "ImageScannerUI"),
                 .target(name: "ImageAnalysis"),
                 .target(name: "AIDescriptionService"),
                 .target(name: "SharedModels"),
-                .target(name: "Utilities")
+                .target(name: "Utilities"),
+                .target(name: "OpenAIProvider")
             ],
             settings: .settings(base: moduleSettings)
         ),
@@ -40,6 +50,11 @@ let project = Project(
             infoPlist: .default,
             sources: ["Modules/ImageScannerUI/Sources/**"],
             resources: [],
+            dependencies: [
+                .target(name: "SharedModels"),
+                .target(name: "Utilities"),
+                .target(name: "OpenAIProvider")
+            ],
             settings: .settings(base: moduleSettings)
         ),
         .target(
@@ -83,6 +98,21 @@ let project = Project(
             settings: .settings(base: moduleSettings)
         ),
         .target(
+            name: "OpenAIProvider",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "io.tuist.OpenAIProvider",
+            infoPlist: .default,
+            sources: ["Modules/OpenAIProvider/Sources/**"],
+            resources: [],
+            dependencies: [
+                .target(name: "AIDescriptionService"),
+                .target(name: "ImageAnalysis"),
+                .target(name: "SharedModels")
+            ],
+            settings: .settings(base: moduleSettings)
+        ),
+        .target(
             name: "ImageDescriberAITests",
             destinations: .iOS,
             product: .unitTests,
@@ -90,7 +120,8 @@ let project = Project(
             infoPlist: .default,
             sources: ["ImageDescriberAI/Tests/**"],
             resources: [],
-            dependencies: [.target(name: "ImageDescriberAI")]
+            dependencies: [.target(name: "ImageDescriberAI")],
+            settings: .settings(base: moduleSettings)
         ),
     ]
 )
