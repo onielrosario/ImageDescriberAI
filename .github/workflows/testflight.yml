@@ -9,13 +9,15 @@ jobs:
   build-and-upload:
     runs-on: macos-latest
     env:
-     MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-     GIT_AUTHORIZATION: ${{ secrets.GIT_AUTHORIZATION }}
-     KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-     APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
-     APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-     APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-     DEVELOPER_TEAM_ID: ${{ secrets.DEVELOPER_TEAM_ID }}
+        APP_IDENTIFIER: ${{ secrets.APP_IDENTIFIER }}
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        GIT_AUTHORIZATION: ${{ secrets.GIT_AUTHORIZATION }}
+        KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        APP_STORE_USERNAME: ${{ secrets.APP_STORE_USERNAME }}
+        APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+        APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+        APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        DEVELOPER_TEAM_ID: ${{ secrets.DEVELOPER_TEAM_ID }}
      CI: "true"
      
     steps:
