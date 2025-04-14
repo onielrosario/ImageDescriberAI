@@ -32,8 +32,9 @@ lane :beta do
   )
 
   latest_build = latest_testflight_build_number(
-  version: "1.0",
-  app_identifier: "io.tuist.ImageDescriberAI"
+    version: "1.0",
+    app_identifier: "io.tuist.ImageDescriberAI",
+    username: "orose2689@gmail.com"
   )
 
   increment_build_number(build_number: latest_build + 1)
