@@ -18,7 +18,7 @@ jobs:
         APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
         APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         DEVELOPER_TEAM_ID: ${{ secrets.DEVELOPER_TEAM_ID }}
-     CI: "true"
+        CI: "true"
      
     steps:
       - name: 🔄 Checkout repo
