@@ -4,7 +4,6 @@ let moduleSettings: SettingsDictionary = [
     "CLANG_VERIFY_MODULES": "YES",
     "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
     "EXCLUDED_ARCHS[sdk=iphonesimulator*]": "$(inherited) x86_64",
-    "EXCLUDED_ARCHS[sdk=iphoneos*]": "x86_64",
     "CODE_SIGN_STYLE": "Manual",
     "DEVELOPMENT_TEAM": "WU26PZSDC3",
     "CODE_SIGN_IDENTITY": "Apple Distribution"
