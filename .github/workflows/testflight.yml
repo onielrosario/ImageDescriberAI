@@ -1,0 +1,77 @@
+name: 🚀 Deploy to TestFlight
+
+on:
+  push:
+    tags:
+      - 'v*.*.*-testflight'
+
+jobs:
+  build-and-upload:
+    runs-on: macos-latest
+    env:
+     MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+     GIT_AUTHORIZATION: ${{ secrets.GIT_AUTHORIZATION }}
+     KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+     APP_STORE_CONNECT_API_KEY_BASE64: ${{ secrets.APP_STORE_CONNECT_API_KEY_BASE64 }}
+     APP_STORE_CONNECT_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+     APP_STORE_CONNECT_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+     DEVELOPER_TEAM_ID: ${{ secrets.DEVELOPER_TEAM_ID }}
+     CI: "true"
+     
+    steps:
+      - name: 🔄 Checkout repo
+        uses: actions/checkout@v3
+
+      - name: 🍎 Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2'
+
+      - name: 📦 Install bundler
+        run: gem install bundler
+        working-directory: ImageDescriberAI
+
+      - name: 🧰 Install dependencies
+        run: bundle install
+        working-directory: ImageDescriberAI
+
+      - name: 🍺 Install Tuist
+        run: brew install tuist
+        working-directory: ImageDescriberAI
+
+      - name: 🏗 Generate project with Tuist
+        run: tuist generate
+        working-directory: ImageDescriberAI
+
+      - name: 🔐 Set up secrets
+        run: echo "Secrets loaded"
+        working-directory: ImageDescriberAI
+
+      - name: 🧪 Check Fastfile exists
+        run: ls -la fastlane
+        working-directory: ImageDescriberAI
+
+      - name: 📂 Check path & contents
+        run: |
+          pwd
+          ls -la
+        working-directory: ImageDescriberAI
+
+      - name: 🔍 Confirm workspace file
+        run: find . -name "*.xcworkspace"
+        working-directory: ImageDescriberAI
+
+      - name: 🔑 Set up custom keychain for code signing
+        run: |
+          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+          security set-keychain-settings build.keychain
+          echo "Configured keychain"
+
+      - name: Set profile path
+        run: echo "SIGH_PROFILE_PATH=$HOME/Library/MobileDevice/Provisioning Profiles/b99060ae-4a59-4db2-835d-05eaa317d218.mobileprovision" >> $GITHUB_ENV
+
+      - name: 🚀 Deploy to TestFlight
+        run: bundle exec fastlane beta
+        working-directory: ImageDescriberAI

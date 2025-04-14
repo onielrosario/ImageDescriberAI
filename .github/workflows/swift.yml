@@ -1,0 +1,73 @@
+# This workflow will build a Swift project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-swift
+name: iOS-CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  PROJECT_PATH: ImageDescriberAI
+  WORKSPACE: ImageDescriberAI.xcworkspace
+  SCHEME: ImageDescriberAI
+  TEST_TARGET: ImageDescriberAITests
+  SIMULATOR_DESTINATION: platform=iOS Simulator,OS=18.2,name=iPhone 15
+
+jobs:
+  build-and-test:
+    runs-on: macos-latest
+    
+    steps:
+      - name: 🧾 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🛠 Install Tuist
+        run: |
+          brew update
+          brew tap tuist/tuist
+          brew install tuist
+
+      - name: 🏗 Generate Xcode project
+        working-directory: ${{ env.PROJECT_PATH }}
+        run: tuist generate
+
+      - name: 📦 Inject Dummy .env
+        run: echo "OPENAI_API_KEY=test_dummy_key" > ${{ env.PROJECT_PATH }}/${{ env.PROJECT_PATH }}/Resources/.env
+
+      - name: 🧼 Clean Derived Data
+        run: rm -rf ~/Library/Developer/Xcode/DerivedData
+
+      - name: 🏗 Build for Testing
+        working-directory: ${{ env.PROJECT_PATH }}
+        run: |
+          xcodebuild build-for-testing \
+            -workspace ${{ env.WORKSPACE }} \
+            -scheme ${{ env.SCHEME }} \
+            -destination '${{ env.SIMULATOR_DESTINATION }}' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: ✅ Run Unit Tests
+        working-directory: ${{ env.PROJECT_PATH }}
+        run: |
+          xcodebuild test-without-building \
+            -workspace ${{ env.WORKSPACE }} \
+            -scheme ${{ env.SCHEME }} \
+            -destination '${{ env.SIMULATOR_DESTINATION }}' \
+            -only-testing:${{ env.TEST_TARGET }} \
+            -enableCodeCoverage YES \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: 📦 Upload .xcresult bundle
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+           name: Xcode Test Results
+           path: ~/Library/Developer/Xcode/DerivedData/**/Logs/Test/*.xcresult
+
+
