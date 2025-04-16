@@ -1,5 +1,77 @@
 require 'base64'
 
+lane :dev_setup do
+  match(
+    type: "development",
+    readonly: false,
+    git_url: "https://github.com/onielrosario/ios-certificates",
+    git_basic_authorization: ENV['GIT_AUTHORIZATION'],
+    team_id: ENV["DEVELOPER_TEAM_ID"],
+    app_identifier: ENV["APP_IDENTIFIER"],
+    username: ENV["APP_STORE_USERNAME"]
+  )
+
+  # Only add keychain options in CI
+  if ENV["CI"] == "true"
+    match_params[:keychain_name] = "build.keychain"
+    match_params[:keychain_password] = ENV["KEYCHAIN_PASSWORD"]
+  end
+
+  match(match_params)
+
+  disable_automatic_code_signing(
+    path: "ImageDescriberAI.xcodeproj",
+    targets: ["ImageDescriberAI"]
+  )
+
+  update_project_provisioning(
+    xcodeproj: "ImageDescriberAI.xcodeproj",
+    target_filter: "ImageDescriberAI",
+    build_configuration: "Release",
+    profile: ENV["SIGH_PROFILE_PATH"],
+    certificate: "Apple Distribution: Oniel Rosario (WU26PZSDC3)"
+  )
+
+  latest_build = latest_testflight_build_number(
+    version: "1.0",
+    app_identifier: ENV["APP_IDENTIFIER"],
+    api_key: app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["APP_STORE_CONNECT_API_KEY_BASE64"])
+    )
+  )
+
+  increment_build_number(build_number: latest_build + 1)
+
+
+  build_app(
+    workspace: "ImageDescriberAI.xcworkspace",
+    scheme: "ImageDescriberAI",
+    export_method: "app-store",
+    export_options: {
+      provisioningProfiles: {
+        "io.tuist.ImageDescriberAI" => "match AppStore io.tuist.ImageDescriberAI"
+      },
+      signingStyle: "manual",
+      teamID: ENV["DEVELOPER_TEAM_ID"]
+    },
+    build_path: "./build",
+    output_directory: "./build"
+  )
+
+  upload_to_testflight(
+    api_key: app_store_connect_api_key(
+      key_id: ENV["APP_STORE_CONNECT_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_ISSUER_ID"],
+      key_content: Base64.decode64(ENV["APP_STORE_CONNECT_API_KEY_BASE64"])
+    ),
+    changelog: File.read(File.join(Dir.pwd, "release_notes.md")),
+    skip_waiting_for_build_processing: true,
+    notify_external_testers: false
+  )
+end
+
 lane :beta do
   match_params = {
     readonly: true,
