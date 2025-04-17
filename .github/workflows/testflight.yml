@@ -74,6 +74,10 @@ jobs:
       - name: Set profile path
         run: echo "SIGH_PROFILE_PATH=$HOME/Library/MobileDevice/Provisioning Profiles/b99060ae-4a59-4db2-835d-05eaa317d218.mobileprovision" >> $GITHUB_ENV
 
+      - name: 🔢 Bump build number to Unix timestamp
+        run: agvtool new-version -all $(date +%s)
+        working-directory: ImageDescriberAI
+      
       - name: 🚀 Deploy to TestFlight
         run: bundle exec fastlane beta
         working-directory: ImageDescriberAI
