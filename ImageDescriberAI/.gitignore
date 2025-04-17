@@ -72,6 +72,11 @@ Tuist/.build
 ## Bootstrap file
 bootstrap.sh
 
+##ipa contents
+/ipa_contents/
+/build/
+/xcodebuild.log
+
 ## Custom Project Files
 .env
 
