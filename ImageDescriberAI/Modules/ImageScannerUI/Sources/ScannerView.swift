@@ -43,7 +43,7 @@ public struct ScannerView: View {
                         .fontWeight(.semibold)
                         .frame(maxWidth: .infinity)
                         .padding()
-                        .background(Color.blue.opacity(0.1))
+                        .background(Color.blue.opacity(0.2))
                         .cornerRadius(10)
                 }
                 .onChange(of: selectedItem) { _, newItem in
