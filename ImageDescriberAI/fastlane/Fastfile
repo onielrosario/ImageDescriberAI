@@ -19,6 +19,7 @@ lane :dev_setup do
   match(match_params)
 
   disable_automatic_code_signing(
+    use_automatic_signing: false,
     path: "ImageDescriberAI.xcodeproj",
     targets: ["ImageDescriberAI"]
   )
@@ -41,7 +42,7 @@ lane :dev_setup do
     )
   )
 
-  current_local = get_build_number(xcodeproj: "ImageDescriberAI.xcodeproj")
+  current_local = get_build_number(xcodeproj: "ImageDescriberAI.xcodeproj").to_i
   new_build = [latest_remote, current_local].max + 1
 
   increment_build_number(build_number: new_build)
@@ -83,6 +84,7 @@ lane :beta do
   match(match_params)
 
   disable_automatic_code_signing(
+    use_automatic_signing: false,
     path: "ImageDescriberAI.xcodeproj",
     targets: ["ImageDescriberAI"]
   )
@@ -105,7 +107,7 @@ lane :beta do
     )
   )
 
-  current_local = get_build_number(xcodeproj: "ImageDescriberAI.xcodeproj")
+  current_local = get_build_number(xcodeproj: "ImageDescriberAI.xcodeproj").to_i
   new_build = [latest_remote, current_local].max + 1
 
   increment_build_number(build_number: new_build)
