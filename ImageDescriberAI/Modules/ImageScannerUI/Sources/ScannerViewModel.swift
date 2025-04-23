@@ -14,7 +14,7 @@ public final class ScannerViewModel: ObservableObject {
     
     private let aiService: AIServiceInterface
     
-    public init(aiService: AIServiceInterface = OpenAIService(apiKey: Env["OPENAI_API_KEY"] ?? "")) {
+    public init(aiService: AIServiceInterface = OpenAIService()) {
         self.aiService = aiService
     }
     

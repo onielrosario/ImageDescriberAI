@@ -109,8 +109,20 @@ let project = Project(
             dependencies: [
                 .target(name: "AIDescriptionService"),
                 .target(name: "ImageAnalysis"),
-                .target(name: "SharedModels")
+                .target(name: "SharedModels"),
+                .target(name: "ImageUploader")
             ],
+            settings: .settings(base: moduleSettings)
+        ),
+        .target(
+            name: "ImageUploader",
+            destinations: .iOS,
+            product: .staticFramework,
+            bundleId: "io.tuist.ImageUploader",
+            infoPlist: .default,
+            sources: ["Modules/ImageUploader/Sources/**"],
+            resources: [],
+            dependencies: [],
             settings: .settings(base: moduleSettings)
         ),
         .target(

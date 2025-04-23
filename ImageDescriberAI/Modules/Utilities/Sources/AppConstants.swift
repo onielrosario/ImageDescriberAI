@@ -22,7 +22,7 @@ public extension AppConstants {
             switch self {
                 
             case .openAIUrl:
-                "https://api.openai.com/v1/chat/completions"
+                "https://my-openai-proxy-three.vercel.app/api/openai"
             }
         }
     }
