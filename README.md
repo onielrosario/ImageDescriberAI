@@ -2,64 +2,69 @@
 [![Tuist](https://img.shields.io/badge/Tuist-Modular-blue)](https://tuist.io)
 [![iOS](https://img.shields.io/badge/iOS-16+-lightgrey)](https://developer.apple.com/ios/)
 
-
 <img src="https://github.com/user-attachments/assets/590f4ebb-2f0a-45ba-a111-c5a73c780384" alt="Hero Banner" width="100%" />
 
 # 🧠 ImageDescriberAI
 
-Effortlessly turn images into natural language descriptions using OpenAI’s GPT-4o vision model. Built in SwiftUI with a modular, production-ready architecture.
+Effortlessly turn images into natural language descriptions using OpenAI’s GPT-4o vision model. Built with SwiftUI, Cloudinary, and a scalable backend proxy—ready for real-world use and distribution.
 
 ---
 
 ## ✨ Features
 
-- Beautiful native SwiftUI interface
-- Clean, scalable architecture (MVVM + Tuist)
-- Modular codebase with separation of concerns
-- Vision-powered AI descriptions via GPT-4o
-- Integrated Photos picker UI
-- Responsive loading and error states
-- Debounced scanning to prevent duplicate requests
+- 📸 Native SwiftUI interface with Photos picker
+- 🧠 Vision-powered GPT-4o AI descriptions
+- ⚡️ Secure image uploads via **Cloudinary**
+- 🔐 OpenAI API access via Vercel proxy (no key in app)
+- 🧱 Modular Tuist-based architecture (MVVM)
+- ✅ Responsive loading/error states + debounced scanning
+- 📦 Seamless TestFlight automation with Fastlane + GitHub Actions
 
 ---
 
 ## 📷 How It Works
 
-1. Pick an image from your photo library
-2. Image is encoded and passed to an OpenAI-powered service
-3. GPT-4o vision model processes and returns a description
-4. Result is displayed in a styled UI card
+1. Select an image from your library
+2. The image is uploaded to Cloudinary
+3. The Cloudinary URL is sent to a **Vercel proxy**
+4. The proxy securely talks to OpenAI’s `gpt-4o` model
+5. A natural-language description is returned and displayed in-app
 
 ---
 
 ## 🛠 Architecture
 
 - **SwiftUI + MVVM**
-- **Modular Design:** Built with [Tuist](https://tuist.io)
+- **Tuist Modular Design**
+- **Backend Proxy (Vercel)** for secure key handling
+- **Cloudinary SDK** integration for image hosting
 - **Main Modules:**
   - `ImageDescriberAI` (App entry)
   - `ImageScannerUI`
   - `ImageAnalysis`
   - `AIDescriptionService`
   - `SharedModels`
-  - `Utilities`
+  - `ImageUploader`
   - `OpenAIProvider`
 
 ---
 
 ## 🔐 Secrets / API Keys
 
-This project uses a `.env` file to securely load API keys:
+The app does **not** expose OpenAI keys. Keys are securely used in the backend proxy.
+
+For local testing, the project uses `.env`:
 
 ```env
 OPENAI_API_KEY=your-api-key-here
-```
+
 
 - Copy `.env.example` to `.env`
 - Add your OpenAI key
 - `.env` is listed in `.gitignore`
 - During debug, the file must be copied into the app bundle manually
 - During CI builds, a dummy `.env` is injected automatically
+```
 
 ---
 
@@ -84,12 +89,20 @@ open ImageDescriberAI.xcworkspace
 
 ## 🧪 CI Pipeline
 
-This project includes a GitHub Actions workflow for CI:
+TestFlight deployment is automated using GitHub Actions + Fastlane:
 
 - 🏗 Builds and tests on `macos-latest`
 - ✅ Automatically disables code signing
-- 📦 Injects a dummy `.env` value for testing
+- 📦 Injects a dummy `.env` value for testing and builds and pushes to TestFlight on tag push (e.g. v1.0.0-testflight)
+  Example:
+   ```
+  on:
+  push:
+    tags:
+      - 'v*.*.*-testflight'
+   ```
 - 🧼 Cleans derived data for consistency
+- 🔐 Secrets handled with GitHub Actions encrypted secrets
 - 🔍 Uses `xcodebuild` with inline build flags:
 
 ```bash
@@ -104,11 +117,11 @@ They must be **inline build settings**, or they will be ignored.
 
 ## 📦 Future Enhancements
 
-- Usage-based credit system for scans
-- Backend proxy to shield OpenAI keys
-- In-app purchases or Stripe integration
-- Scan history log
-- Multilingual support
+- 🔄 Usage-based scan credits
+- 🛒 In-app purchases via StoreKit or Stripe
+- 🧠 Scan history and logging
+- 🌐 Multilingual support
+- 🧼 Offline caching of results
 
 ---
 
@@ -131,7 +144,7 @@ PRs welcome! If you find a bug or want to propose an improvement, open an issue 
 
 ## 👨‍💻 Built By
 
-**Oniel Rosario** – iOS Engineer & AI Explorer
+**Oniel Rosario** – iOS Engineer | AI Explorer | Modular Design Enthusiast
 
 Have ideas, feedback, or want to collaborate? Feel free to reach out or contribute ✌️
 
