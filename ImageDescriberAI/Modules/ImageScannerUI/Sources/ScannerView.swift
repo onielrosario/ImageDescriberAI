@@ -12,7 +12,7 @@ public struct ScannerView: View {
             VStack(spacing: 24) {
                 // MARK: - Header
                 HStack(spacing: 8) {
-                    Text("🧠")
+                    Text("🤖")
                     Text("Image Describer")
                         .font(.largeTitle)
                         .bold()
